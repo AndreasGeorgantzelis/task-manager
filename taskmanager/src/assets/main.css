@@ -1,0 +1,36 @@
+@import './base.css';
+
+@media (hover: hover) {
+  body{
+    overflow: hidden;
+  }
+
+  a:hover {
+    background-color: hsla(0, 86%, 55%, 0.2);
+  }
+
+  .bucket{
+    height: 250px;
+    width: 100px;
+    background-color:transparent;
+    border-width: 5px;
+    border: 10px solid #000000;
+    text-align: center;
+    color: black;
+
+  }
+
+
+  h3{
+        font-weight: bolder;
+
+  }
+
+  h2{
+    font-size: initial;
+    margin-bottom:-20px;
+  }
+
+}
+
+
