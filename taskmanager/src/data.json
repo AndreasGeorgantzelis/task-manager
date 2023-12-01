@@ -1,0 +1,6 @@
+{
+  "order_id": "ORD123456",
+  "customer": {"id": "CUST789", "name": "John Doe", "email": "john.doe@example.com"},
+  "items": [{"product_id": "PROD001", "quantity": 2}, {"product_id": "PROD002", "quantity": 1}],
+  "total": 69.97
+}

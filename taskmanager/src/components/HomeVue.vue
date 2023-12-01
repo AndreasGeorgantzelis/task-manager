@@ -2,7 +2,7 @@
     <div class="container">
         <div class="box">
             <div class="arrow">
-                <TextArrow text="Task pool" />
+                <TextArrow text="Pool" />
             </div>
             <div class="failed">
                 <div class="storage">
@@ -39,9 +39,7 @@
             <div class="arrow">
                 <TextArrow />
             </div>
-            <div class="task-queue">
-                <TaskQueueVue />
-            </div>
+            <h1><strong>HANDLER</strong></h1>
             <div class="arrow">
                 <TextArrow text="IF ack" />
             </div>
@@ -50,6 +48,8 @@
             </div>
 
         </div>
+
+
     </div>
 </template>
 
@@ -96,6 +96,8 @@ export default {
     flex-direction: column;
     margin-bottom: -250px;
     transform: scaleX(-1);
+    /* margin-bottom: 5px; */
+
 }
 
 .text {

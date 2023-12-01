@@ -1,7 +1,7 @@
 <template>
     <div class="bucket">
         <div class="title">
-            <p>Storage</p>
+            <p>Pool</p>
             <hr>
         </div>
 
