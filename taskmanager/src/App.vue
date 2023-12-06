@@ -1,6 +1,7 @@
 <script>
 import homevue from './components/homevue.vue';
 
+
 export default {
 
   components: {

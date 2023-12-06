@@ -1,121 +1,92 @@
 import { getPool } from './pool'
-import { makeTask } from './task';
+import { makeTask, saveTask } from './task';
 import { handler } from './handler';
+import { getPoolHandler } from './pool';
+import { trackMovements } from './task';
 
+
+//set up local storage array
 export var storage = [];
+localStorage.setItem("tasks", storage);
 export var get = [];
-export var succes = [];
+export var success = [];
 export var failed = [];
 
-handleNext();
 
-const handleNext = () => {
-    const pool = getPool();
+export var queues = [];
 
-    if (!pool) {
-        console.log("pool is empty!")
-        return null;
-    } else {
-        handle(pool);
+
+export const registerPool = (name, handler) => {
+    queues[name] = getPool(name, handler)
+
+    return queues[name];
+
+
+}
+
+
+
+
+// handling
+export const handleNext = () => {
+
+    let queue = null;
+    if (Object.keys(queues).length > 0) {
+    const randomIndex = Math.floor(Math.random() * queues.length);
+    queue = queues[randomIndex];
     }
+
+    if (queue) {
+         queue = queues[queue];
+    } else {
+          queue = registerPool("test" + Date.now(), function() {
+			return true;
+		});
+    }
+    // the code above, checks if there is a queue already registered, if there is it moves on
+    // with handling the queue, if there isnt it registers a queue.
+        
+    handle(queue);
+
 };
 
 const handle = (pool) => {
     // restoreFailed(pool);
+    const handler = pool.handler
     const task = makeTask(pool);
 
     if (task) {
 
         if (handler(task)) {
             ack(task);
-            return task;
+        } else {
+            unAck(task);
         }
-
-        unAck(task);
     }
 
-    return null;
+    return task;
 };
-
-
-
-
-
-const getFirstFilename = (path, sort = "TIME_ASC") => {
-    const allowedSorts = ["TIME_ASC", "TIME_DESC", "FILENAME_ASC"];
-
-    if (!allowedSorts.includes(sort)) {
-        throw new Error(`Invalid sort flag: ${sort}`);
-    }
-
-    const files = fs.readdirSync(path);
-    let sortCallback;
-
-    switch (sort) {
-        case "TIME_ASC":
-            sortCallback = (a, b) => fs.statSync(`${path}/${a}`).mtime - fs.statSync(`${path}/${b}`).mtime;
-            break;
-        case "TIME_DESC":
-            sortCallback = (a, b) => fs.statSync(`${path}/${b}`).mtime - fs.statSync(`${path}/${a}`).mtime;
-            break;
-        case "FILENAME_ASC":
-            sortCallback = (a, b) => a.localeCompare(b);
-            break;
-    }
-
-    files.sort(sortCallback);
-    const firstFilename = files[0];
-
-    return firstFilename !== undefined ? firstFilename : null;
-};
-
 
 
 const ack = (task) => {
-    const taskPoolGetFilePath = getTaskPoolGetFilePath(task);
 
-    if (fs.existsSync(taskPoolGetFilePath)) {
-        fs.unlinkSync(taskPoolGetFilePath);
-    }
+    //todo clean up this
+
+
+    let ackTask = localStorage.getItem("task" + task.initialTimestamp)
+    let parsedTask = JSON.parse(ackTask);
+    trackMovements(parsedTask);
+    console.log(parsedTask)
+    success.push(parsedTask);
+    // localStorage.removeItem("task" + task.initialTimestamp);
+
 };
 
 const unAck = (task) => {
-    saveTask(task, COPY_TASK_GET, COPY_TASK_POOL);
+
+    //todo check this 
+    // make it work with task.movement >= 4
+
+    trackMovements(task);
+    saveTask(task);
 };
-
-const save = (task) => {
-    const taskPoolFilePath = getTaskPoolFilePath(task);
-    const content = JSON.stringify({
-        pool: task.pool,
-        context: task.context,
-    }, null, 2);
-
-    // TODO: Decide if content can be overridden. Now it does
-    fs.writeFileSync(taskPoolFilePath, content);
-
-    return true;
-};
-
-
-//     validateContext,
-//     generateUuidForTask,
-//     copyTask,
-//     getTaskPoolFilePath,
-//     getPoolTasksPath,
-//     getTasksPath,
-//     getPath,
-//     setPath,
-//     getTaskPoolGetFilePath,
-//     getPoolGetTasksPath,
-//     getTaskPoolFailedFilePath,
-//     getPoolFailedTasksPath,
-//     handleNext,
-//     getNextPool,
-//     handle,
-//     restoreFailed,
-//     getFirstFilename,
-//     getNextTask,
-//     ack,
-//     unAck,
-//     save,
-// };

@@ -1,33 +1,35 @@
+import { handler } from "./handler";
 
-export const getPool = () => {
-    var pool = createPool();
-    if (!Object.keys(pool).length) {
-        return null;
-    } else { return pool }
-
-    // const poolsIndex = Math.floor(Math.random() * Object.keys(pools).length);
-    // const pools = Object.keys(pools);
-    // const key = pools[poolsIndex];
-
- 
+export const getPool = (name, handler) => {
+   return createPool(name,handler); 
 };
   
 
- const createPool = () => {
-
-    var poolName = Math.random * Date.now()
-
+const createPool = (name, handler) => {
+     
+    if (typeof (handler) != "function") {
+        console.log("You must give a handler!")
+        return null
+    }
 
     var pool = {
-        name: poolName,
-        
+        name: name,
+        handler: handler,
+        content: ''
     }
 
     return pool;
-};
+ };
+
+// const getPoolName = () => {
+//      return poolName = Math.random * Date.now()
+// }
+ 
+export const getPoolHandler = () => {
+    return handler();
+ }
 
 
 
-// Example usage:
-const myPool = createPool(someFunction);
+
 
