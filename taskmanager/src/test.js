@@ -1,5 +1,8 @@
 import { handleNext } from "./manager";
-import { registerPool } from "./manager";
+import { registerPool } from "./pool";
+import { validateTask } from "./manager";
+import { get } from "./adapter";
+
 
 
 export const test = () => {
@@ -13,12 +16,15 @@ export const test = () => {
         return true;
     });
 
-
-
     //add payload to "test" queue
     pool.content = ("test", Date.now() * 3, "context");
-    console.log(pool);
 
-    let handledTask = handleNext();
+    validateTask(pool.name, pool.content);
+   
     
+    
+}
+
+export const handleNextTask = () => {
+    handleNext();
 }

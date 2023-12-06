@@ -1,59 +1,60 @@
-import { getPool } from './pool'
-import { makeTask, saveTask } from './task';
+
+import { constructInit } from './task';
+import { unAck } from './adapter';
 import { handler } from './handler';
-import { getPoolHandler } from './pool';
-import { trackMovements } from './task';
+import { save } from './adapter';
+import { get } from './adapter';
+import { queues } from './pool';
 
 
-//set up local storage array
-export var storage = [];
-localStorage.setItem("tasks", storage);
-export var get = [];
-export var success = [];
-export var failed = [];
 
-
-export var queues = [];
-
-
-export const registerPool = (name, handler) => {
-    queues[name] = getPool(name, handler)
-
-    return queues[name];
-
-
+export const validateTask = (queue,data) => {
+    publish(queue, data);
 }
+
+
+export const publish = (queue, data) => {
+  if (!(queues[queue] || false)) {
+    console.log( "Wrong Queue!")
+  }
+  
+  var id = "task" + Date.now() * 2
+
+  var task = constructInit(id, queue, data);
+  save(queue,task); //save task to queue
+
+  return task;
+}
+
 
 
 
 
 // handling
 export const handleNext = () => {
+  
 
     let queue = null;
-    if (Object.keys(queues).length > 0) {
-    const randomIndex = Math.floor(Math.random() * queues.length);
-    queue = queues[randomIndex];
+    if (queues) {
+        queue = queues[0];
     }
 
     if (queue) {
-         queue = queues[queue];
+        queue = queues[queue];
+        get(queue);
     } else {
-          queue = registerPool("test" + Date.now(), function() {
-			return true;
-		});
+        return null;
     }
     // the code above, checks if there is a queue already registered, if there is it moves on
     // with handling the queue, if there isnt it registers a queue.
         
-    handle(queue);
+    return 1;
 
 };
 
 const handle = (pool) => {
     // restoreFailed(pool);
     const handler = pool.handler
-    const task = makeTask(pool);
 
     if (task) {
 
@@ -75,18 +76,10 @@ const ack = (task) => {
 
     let ackTask = localStorage.getItem("task" + task.initialTimestamp)
     let parsedTask = JSON.parse(ackTask);
-    trackMovements(parsedTask);
+    // trackMovements(parsedTask);
     console.log(parsedTask)
     success.push(parsedTask);
     // localStorage.removeItem("task" + task.initialTimestamp);
 
 };
 
-const unAck = (task) => {
-
-    //todo check this 
-    // make it work with task.movement >= 4
-
-    trackMovements(task);
-    saveTask(task);
-};

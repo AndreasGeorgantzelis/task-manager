@@ -1,32 +1,22 @@
-import { storage } from "./manager";
 
-export const makeTask = (pool) => {
+export const constructInit = (id,queue,data) => {
 
-        const newTask = {
-            pool: pool.name,
+  const newTask = {
+            id : id,
+            pool: queue.name,
             initialTimestamp: Date.now(),
-            context: pool.content,
-            movements : []
+            context: data,
+            state: {
+                from:"",
+                to: "",
+                name: "null",
+                timestamp: Date.now(),
+            },
         };
 
-        saveTask(newTask);
+     
         return newTask;
  
 };
 
 
-export const saveTask = (task) => {
-  
-    if (task.movements.length >= 4) {
-        // go to failed
-    } else {
-        localStorage.setItem("task"+task.initialTimestamp, JSON.stringify(task));
-        trackMovements(task);
-    }
-};
-
-export const trackMovements = (task) => {
-      task.movements.push({
-        timestamp: Date.now(),
-      });
-}

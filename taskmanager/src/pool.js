@@ -1,5 +1,21 @@
 import { handler } from "./handler";
 
+export var queues = [];
+
+
+export const registerPool = (name, handler) => {
+       if (!queues[name]) {
+        queues[name] = [];
+    }
+    
+    queues[name] = getPool(name, handler);
+    queues.push(queues[name])
+
+    return queues[name];
+
+
+}
+
 export const getPool = (name, handler) => {
    return createPool(name,handler); 
 };
