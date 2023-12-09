@@ -11,5 +11,5 @@ test();
 
 //TODO fix error if queue is empty
 
-handleNextTask(); 
+handleNextTask();  
 createApp(App).mount('#app')

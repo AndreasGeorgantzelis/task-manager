@@ -6,12 +6,12 @@ export const constructInit = (id,queue,data) => {
             pool: queue.name,
             initialTimestamp: Date.now(),
             context: data,
-            state: {
+            state: [{
                 from:"",
                 to: "",
                 name: "null",
                 timestamp: Date.now(),
-            },
+            }],
         };
 
      

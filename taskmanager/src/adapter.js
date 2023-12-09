@@ -11,7 +11,7 @@ export const save = (queue, task) => {
         if (tasks) {
             var parsedTasks = JSON.parse(tasks) || [];
     
-            task.state = getState(task.state, "queue");
+            task.state.push(getState(task.state, "queue"));
             
         
 
@@ -29,7 +29,7 @@ export const save = (queue, task) => {
 export const get = (queue) => {
     var oldestTask = getOldestFromQueue(queue);
     // console.log(oldestTask.state)
-    oldestTask.state = getState(oldestTask.state, "get");
+    oldestTask.state.push(getState(oldestTask.state, "get"));
     localStorage.setItem("get", JSON.stringify(oldestTask));
 
 }

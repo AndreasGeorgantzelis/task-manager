@@ -1,5 +1,3 @@
-
-
   const STATE_NAME_NULL = "null";
   const QUEUE = "queue";
   const GET = "get";
@@ -18,15 +16,15 @@
 
 
 export const getState = (state, to) => {
-    
-  console.log(state, to);
-    // validate(from, to);
-
-    return {
-      from:state.name,
+  
+  //finds the last state of the task
+  let lastState = state[state.length - 1];
+   
+  return {
+      from: lastState.name,
       to: to,
-      name: getName(state.name),
-      timestamp: getTimestamp(state),
+      name: getName(lastState.name),
+      timestamp: getTimestamp(lastState),
     
     };
   };
@@ -47,10 +45,19 @@ export const getState = (state, to) => {
 
 const getName = (state) => {
 
-  if (state === "null") return QUEUE;
-  if (state === "queue") return GET;
-  if (state === "get") return ACK;
-  if (state === "nack") return QUEUE;
+  if (state === "null") {
+  
+    return QUEUE
+  };
+  if (state === "queue") {
+    return GET;
+  }
+  if (state === "get") {
+    return ACK
+  };
+  if (state === "nack") {
+    return QUEUE
+  };
   //more transitions!!
 };
   
