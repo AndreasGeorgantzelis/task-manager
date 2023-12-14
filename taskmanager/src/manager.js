@@ -1,10 +1,14 @@
 
 import { constructInit } from './task';
 import { unAck } from './adapter';
+import { ack } from './adapter';
 import { handler } from './handler';
 import { save } from './adapter';
 import { get } from './adapter';
-import { queues } from './pool';
+import { getPoolHandler } from './pool';
+import { queues } from './test';
+
+
 
 
 
@@ -32,34 +36,44 @@ export const publish = (queue, data) => {
 
 // handling
 export const handleNext = () => {
-  
 
-    let queue = null;
-    if (queues) {
-        queue = queues[0];
-    }
+    //TODO : HANDLER DOESNT GO THROUGH LOCAL STORAGE FIND ANOTHER WAY TO FIND QUEUES
+    //TODO : MAKE TIDE.JS
+    //TODO : MAKE REQUEUE
+    //TODO : MAKE CONDITION FOR FAILED TASKS 
+
+    
+  
+    let queue = queues;
+
+    // console.log(queue);
 
     if (queue) {
-        queue = queues[queue];
-        get(queue);
+        var task = get();
+        if (task) {;
+            // handle(task,queue);
+            console.log('task to be handled : ', task);
+        }
+
     } else {
+        console.log("queue was not found");
         return null;
     }
-    // the code above, checks if there is a queue already registered, if there is it moves on
-    // with handling the queue, if there isnt it registers a queue.
+ 
         
-    return 1;
 
 };
 
-const handle = (pool) => {
-    // restoreFailed(pool);
-    const handler = pool.handler
+const handle = (task, queue) => {
 
+    console.log(queue);
+    // restoreFailed(pool);
+    const handler = queue.handler;
     if (task) {
 
         if (handler(task)) {
             ack(task);
+            console.log("done")
         } else {
             unAck(task);
         }
@@ -69,17 +83,5 @@ const handle = (pool) => {
 };
 
 
-const ack = (task) => {
 
-    //todo clean up this
-
-
-    let ackTask = localStorage.getItem("task" + task.initialTimestamp)
-    let parsedTask = JSON.parse(ackTask);
-    // trackMovements(parsedTask);
-    console.log(parsedTask)
-    success.push(parsedTask);
-    // localStorage.removeItem("task" + task.initialTimestamp);
-
-};
 

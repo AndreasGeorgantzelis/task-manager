@@ -2,6 +2,10 @@ import { getState } from "./state";
 
 
 export const save = (queue, task) => {
+    if (!task) {
+        console.log("task wasnt found");
+        return null
+    }
     if (task.state.length >= 4) {
        console.log("failed")
     } else {
@@ -9,14 +13,12 @@ export const save = (queue, task) => {
         var tasks = localStorage.getItem("tasks");
     
         if (tasks) {
-            var parsedTasks = JSON.parse(tasks) || [];
-    
-            task.state.push(getState(task.state, "queue"));
-            
-        
 
+            var parsedTasks = JSON.parse(tasks) || [];
+            task.state.push(getState(task.state, "queue"));
             parsedTasks.push(task);
             localStorage.setItem("tasks", JSON.stringify(parsedTasks));
+
         }
         else {
             console.log("queue is empty!")
@@ -26,34 +28,59 @@ export const save = (queue, task) => {
    
 };
 
-export const get = (queue) => {
-    var oldestTask = getOldestFromQueue(queue);
-    // console.log(oldestTask.state)
-    oldestTask.state.push(getState(oldestTask.state, "get"));
-    localStorage.setItem("get", JSON.stringify(oldestTask));
+export const get = () => {
+
+    var oldestTask = getOldestFromQueue("tasks");
+    if (oldestTask) {
+        oldestTask.state.push(getState(oldestTask.state, "get"));
+        localStorage.setItem("get", JSON.stringify(oldestTask));
+        return oldestTask
+    }
 
 }
 
-export const getOldestFromQueue = () => {
-    var tasks = localStorage.getItem("tasks");
-    var parsedTasks = JSON.parse(tasks) || [];
-    // console.log(parsedTasks);
+export const getOldestFromQueue = (queue) => {
 
-    var oldestTask = parsedTasks[0]
+    var tasks = JSON.parse(localStorage.getItem(queue));
+    
+    console.log(tasks);
 
-    dequeue(parsedTasks);
+    if (tasks) {
+            var oldestTask = dequeue(tasks, queue);
+            return oldestTask;
+        }
+       
+}
+
+export const dequeue = (tasks,queue) => {
+
+    var oldestTask = tasks.shift();
+    localStorage.setItem(queue, JSON.stringify(tasks))
 
     return oldestTask;
-}
 
-export const dequeue = (parsedTasks) => {
-    // console.log(parsedTasks.shift())
-    parsedTasks.shift();
-    localStorage.setItem("tasks", JSON.stringify(parsedTasks))
 }
 
 export const unAck = (task) => {
     requeque(task);
+}
+
+export const ack = () => {
+
+     var ackTask = getOldestFromQueue("get");
+
+     var success = localStorage.getItem("success");
+    
+        if (success) {
+            var parsedSuccess = JSON.parse(success) || [];
+
+             ackTask.state.push(getState(ackTask.state, "ack"));
+             console.log(ackTask.id + " was handled\n");
+            
+            parsedSuccess.push(ackTask);
+            localStorage.setItem("success", JSON.stringify(parsedSuccess));
+        }
+
 }
 
 export const requeque = (task) => {

@@ -1,6 +1,7 @@
 import { handler } from "./handler";
+import { queues } from './test';
 
-export var queues = [];
+
 
 
 export const registerPool = (name, handler) => {
@@ -11,8 +12,9 @@ export const registerPool = (name, handler) => {
     queues[name] = getPool(name, handler);
     queues.push(queues[name])
 
-    return queues[name];
+    console.log(queues);
 
+    return queues[name];
 
 }
 
@@ -43,7 +45,8 @@ const createPool = (name, handler) => {
  
 export const getPoolHandler = () => {
     return handler();
- }
+}
+ 
 
 
 
