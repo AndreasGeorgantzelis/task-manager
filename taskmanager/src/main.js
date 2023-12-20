@@ -13,7 +13,7 @@ localStorage.setItem("success", JSON.stringify(success));
 
 
 
-test();
+// test();
 
 handleNextTask();
 

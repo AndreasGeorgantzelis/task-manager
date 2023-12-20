@@ -16,6 +16,7 @@
 
 
 export const getState = (state, to) => {
+  console.log(state)
   
   //finds the last state of the task
   let lastState = state[state.length - 1];
@@ -58,6 +59,8 @@ const getName = (state) => {
   if (state === "nack") {
     return QUEUE
   };
+
+  //use VALID_TRANSITIONS
   //more transitions!!
 };
   

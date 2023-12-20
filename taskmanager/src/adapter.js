@@ -7,7 +7,7 @@ export const save = (queue, task) => {
         return null
     }
     if (task.state.length >= 4) {
-       console.log("failed")
+        console.log("failed");
     } else {
 
         var tasks = localStorage.getItem("tasks");
@@ -21,7 +21,7 @@ export const save = (queue, task) => {
 
         }
         else {
-            console.log("queue is empty!")
+            console.log("queue is empty!");
         }
   
     }
@@ -31,10 +31,11 @@ export const save = (queue, task) => {
 export const get = () => {
 
     var oldestTask = getOldestFromQueue("tasks");
+
     if (oldestTask) {
         oldestTask.state.push(getState(oldestTask.state, "get"));
         localStorage.setItem("get", JSON.stringify(oldestTask));
-        return oldestTask
+        return oldestTask;
     }
 
 }
@@ -43,7 +44,7 @@ export const getOldestFromQueue = (queue) => {
 
     var tasks = JSON.parse(localStorage.getItem(queue));
     
-    console.log(tasks);
+    // console.log(tasks);
 
     if (tasks) {
             var oldestTask = dequeue(tasks, queue);
@@ -52,7 +53,9 @@ export const getOldestFromQueue = (queue) => {
        
 }
 
-export const dequeue = (tasks,queue) => {
+export const dequeue = (tasks, queue) => {
+ 
+    
 
     var oldestTask = tasks.shift();
     localStorage.setItem(queue, JSON.stringify(tasks))
@@ -67,19 +70,14 @@ export const unAck = (task) => {
 
 export const ack = () => {
 
-     var ackTask = getOldestFromQueue("get");
 
-     var success = localStorage.getItem("success");
-    
-        if (success) {
-            var parsedSuccess = JSON.parse(success) || [];
+    var ackTask = JSON.parse(localStorage.getItem("get"));
+    localStorage.setItem("get", []);
 
-             ackTask.state.push(getState(ackTask.state, "ack"));
-             console.log(ackTask.id + " was handled\n");
-            
-            parsedSuccess.push(ackTask);
-            localStorage.setItem("success", JSON.stringify(parsedSuccess));
-        }
+    var success = JSON.parse(localStorage.getItem("success"));
+    success.push(ackTask);
+
+    localStorage.setItem("success", JSON.stringify(success));
 
 }
 
@@ -90,4 +88,3 @@ export const requeque = (task) => {
 export const failed = (task) => {
         localStorage.setItem("task"+task.initialTimestamp, JSON.stringify(task));
 }
-

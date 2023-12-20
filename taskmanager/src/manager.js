@@ -12,6 +12,7 @@ import { queues } from './test';
 
 
 
+
 export const validateTask = (queue,data) => {
     publish(queue, data);
 }
@@ -46,12 +47,12 @@ export const handleNext = () => {
   
     let queue = queues;
 
-    // console.log(queue);
+    console.log(queue);
 
     if (queue) {
         var task = get();
         if (task) {;
-            // handle(task,queue);
+            handle(task,queue);
             console.log('task to be handled : ', task);
         }
 
@@ -66,9 +67,8 @@ export const handleNext = () => {
 
 const handle = (task, queue) => {
 
-    console.log(queue);
-    // restoreFailed(pool);
-    const handler = queue.handler;
+    // console.log(queue);
+
     if (task) {
 
         if (handler(task)) {
