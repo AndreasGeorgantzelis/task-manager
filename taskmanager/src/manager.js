@@ -73,8 +73,9 @@ const handle = (task, queue) => {
 
         if (handler(task)) {
             ack(task);
-            console.log("done")
         } else {
+            console.log("done")
+
             unAck(task);
         }
     }
