@@ -15,8 +15,8 @@ localStorage.setItem("failed", JSON.stringify(failed));
 
 
 
-// test(); 
+test(); 
 
-handleNextTask();
+// handleNextTask();
 
 createApp(App).mount('#app')

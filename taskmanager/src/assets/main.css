@@ -11,13 +11,15 @@
 
   .bucket{
     height: 250px;
-    width: 100px;
+    width: 220px;
     background-color:transparent;
     border-width: 5px;
     border: 10px solid #000000;
     text-align: center;
     color: black;
+    overflow-y: scroll;
 
+    font-size: small;
   }
 
 
